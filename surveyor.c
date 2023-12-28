@@ -260,7 +260,10 @@ int parseClib(char* path)
                     //Call parseClib to get that modules dependencies
                     parseClib(libPath->data);
                 }
+                buffer_free(fileAsBuff);
             }
+            vec_deinit(&filesInDepDir);
+            buffer_free(libPath);
         }
     } 
     else 
@@ -270,6 +273,7 @@ int parseClib(char* path)
     
 
     //Clean-up
+    vec_deinit(&moduleDeps);
     fclose(clib);
     buffer_free(clibContents);
     json_value_free(root);
@@ -305,6 +309,8 @@ int main()
 
             //Write it to the file.
             fputs(source->data, survey);
+
+            buffer_free(source);
 
         }
         fclose(survey);
