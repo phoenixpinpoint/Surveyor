@@ -8,7 +8,9 @@
     "dependencies": {
         "clibs/buffer": "*",
         "kgabis/parson": "*",
-        "likle/cwalk": "*"
+        "likle/cwalk": "*",
+        "rxi/vec": "*",
+        "jwerle/fs.c": "*"
     },
     "src": [
         "surveyor.c"
