@@ -1,6 +1,10 @@
 surveyor:
 	gcc -Ideps -Ideps/cwalk surveyor.c -o surveyor
 
+local: 
+	clib install;
+	gcc -Ideps -Ideps/cwalk surveyor.c -o surveyor;
+
 leak:
 	make clean;
 	make;
