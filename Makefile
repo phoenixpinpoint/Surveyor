@@ -4,7 +4,7 @@ surveyor:
 local: 
 	clib install;
 	gcc -Ideps -Ideps/cwalk surveyor.c -o surveyor;
-	mv surveyor ../../;
+	mv surveyor ../;
 
 leak:
 	make clean;
