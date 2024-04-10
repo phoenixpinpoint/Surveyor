@@ -1,3 +1,6 @@
+#ifndef SURVEYOR_H
+#define SURVEYOR_H
+
 #include <stdio.h>
 #include <dirent.h> 
 
@@ -23,3 +26,5 @@ vec_void_t getSourceFilesInDirectory(char* dirPath);
 //Opens a given clib.json and gets the dependencies.
 //Returns 0 if completed successfully, -1 on error. 
 int parseClib(char* path);
+
+#endif
