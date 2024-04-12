@@ -40,4 +40,32 @@ vec_void_t srvyr_get_files_in_directory(char* dirPath)
     return fileNames;
 }
 
+//Takes an vector of files and returns all the source files
+//Returns a vector of buffer_t's
+vec_void_t srvyr_get_source_files(vec_void_t files)
+{
+	vec_void_t sourceFiles;
+	vec_init(&sourceFiles);
+	buffer_t* filename;
+	int i;
+	if (files.length > 0)
+	{	
+		vec_foreach(&files, filename, i)
+		{
+
+			//Get the extension for the file
+			char* extension;
+			size_t extLen;
+			cwk_path_get_extension(filename->data, &extension, &extLen);
+
+			//If it ends in .c then add it to the vector.
+			if(strcmp(extension, ".c") == 0)
+			{
+				vec_push(&sourceFiles, (void*)filename);
+			}
+		}
+	}
+	return sourceFiles;
+}
+
 

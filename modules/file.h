@@ -13,6 +13,7 @@
 //Build Path Header Includes
 //ie #include <stdlib.h>
 #include<vec/vec.h>
+#include<cwalk/cwalk.h>
 
 //Local Headers
 //ie #include "somefile.h"
@@ -22,9 +23,13 @@
 
 //Function Prototypes
 
-//Looks in the deps/ directory and grabs files/folders
+//Looks in the passed directory and grabs files/folders
 //Returns a vector of buffer_t's
 vec_void_t srvyr_get_files_in_directory(char* dirPath);
+
+//Takes a vector of files and returns all the source files
+//Returns a vector of buffer_t's
+vec_void_t srvyr_get_source_files(vec_void_t files);
 
 
 

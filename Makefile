@@ -18,5 +18,14 @@ test:
 
 clean:
 	rm -rf ./surveyor
-	rm -rf ./tests/.o
+	rm -rf ./getfilestest
+	rm -rf ./tests/*.o
 	rm -rf ./tests/getfilestest
+	rm -rf ./tests/*.gcov
+	rm -rf ./tests/*.gcda
+	rm -rf ./tests/*.gcno
+
+coverage:
+	make clean;
+	gcc -fprofile-arcs -ftest-coverage -Ideps -Ideps/cwalk -Imodules tests/tests.c -o tests/coverage.o -pthread -lcheck -lsubunit -lrt -lm; ./tests/coverage.o
+	mv ./tests.gcda ./tests; mv ./tests.gcno ./tests; cd tests; gcov tests.c
