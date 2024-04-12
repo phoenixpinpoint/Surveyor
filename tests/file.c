@@ -33,20 +33,35 @@ START_TEST(get_sources)
 {
 	printf("%s\n\0", "CHECKING GET SOURCE");
 	vec_void_t files = srvyr_get_files_in_directory("getfilestest");
-	//printf("File Vector Count: %d\n", files.length);
 	vec_void_t sourceFiles = srvyr_get_source_files(files);
-	//printf("Source Files Vector Count: %d\n", sourceFiles.length);
 	ck_assert_int_eq(sourceFiles.length, 1);
 	int i;
 	buffer_t* buffer;
 	vec_foreach(&sourceFiles, buffer, i)
 	{
-		//printf("%s\n\0", buffer->data);
 		buffer_free(buffer);	
 	}	
 	vec_deinit(&sourceFiles);
 }
 
+START_TEST(issue_1_included_a_make_file)
+{
+	printf("%s\n\0", "CHECKING 1-included-a-makefile");
+	FILE *testmakefile = fs_open("getfilestest/Makefile", "w");
+	ck_assert_int_eq(fs_exists("getfilestest/Makefile"), 0);
+	
+	//Check output
+	vec_void_t files;
+	int i;
+	buffer_t *buffer;
+
+	files = srvyr_get_files_in_directory("getfilestest");
+	ck_assert_int_eq(files.length, 3);
+
+	vec_void_t sourceFiles = srvyr_get_source_files(files);
+	ck_assert_int_eq(sourceFiles.length, 1);
+}
+END_TEST
 
 Suite* file_suite(void)
 {
@@ -58,6 +73,7 @@ Suite* file_suite(void)
 	tc_file = tcase_create("File");
 	tcase_add_test(tc_file, get_files);
 	tcase_add_test(tc_file, get_sources);
+	tcase_add_test(tc_file, issue_1_included_a_make_file);
 	suite_add_tcase(s, tc_file);
 	
 	return s;
