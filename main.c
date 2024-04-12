@@ -6,10 +6,8 @@
 #include <vec/vec.c>
 #include <fs/fs.c>
 
+#include "modules/file.c"
 #include "surveyor.c"
-
-//Vector to store the paths
-vec_void_t srcPaths;
 
 int main() 
 {

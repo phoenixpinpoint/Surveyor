@@ -1,8 +1,5 @@
 #include "surveyor.h"
 
-//Vector to store the paths
-vec_void_t srcPaths;
-
 //Parses a JSON_Object(clib dependencies object)
 //Adds each dependency to the vector.
 vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
@@ -33,39 +30,6 @@ vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
 
     //Return the list of dependencies.
     return dependencies;
-}
-
-//Looks in the deps/} directory and grabs files/folders
-//Returns a vector of buffer_t's
-vec_void_t getFilesInDirectory(char* dirPath)
-{
-    //Create a vector to store the fileNames as buffer_t's
-    vec_void_t fileNames;
-    vec_init(&fileNames);
-
-    //Initialize the DIR d and dirent struct dir    
-    DIR *d;
-    struct dirent *dir;
-
-    //open the dirpath
-    //Ex: ./deps
-    d = opendir(dirPath);
-
-    if(d) {//If the directory is actually open
-        while((dir = readdir(d)) != NULL)//For all files in directory
-        {
-            //If the its isn't . or ..
-            if(strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
-            {
-                buffer_t* dirNameBuffer = buffer_new_with_copy(dir->d_name);//Create buffer
-                vec_push(&fileNames, (void*)dirNameBuffer);//Add the buffer to the vector.
-            }   
-        }
-    }
-
-    //Close and return.
-    closedir(d);
-    return fileNames;
 }
 
 //Looks in the deps/{dependency} directory and grabs all .c files. 
@@ -242,7 +206,7 @@ int parseClib(char* path)
             buffer_append(libPath, moduleDeps.data[i]);
 
             //Get all the files in that directory
-            vec_void_t filesInDepDir = getFilesInDirectory(libPath->data);
+            vec_void_t filesInDepDir = srvyr_get_files_in_directory(libPath->data);
             for (int j = 0; j < filesInDepDir.length; j++)
             {
                 //Find the clib.json or package.json
