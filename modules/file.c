@@ -6,6 +6,11 @@
  * This file is part of the Surveyor C package manager software. 
  * This software is part of the GNU GPL 3.0 License. 
  */
+#include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+
+#include<cwalk/cwalk.h>
 
 //Looks in the deps/ directory and grabs files/folders
 //Returns a vector of buffer_t's
@@ -52,17 +57,20 @@ vec_void_t srvyr_get_source_files(vec_void_t files)
 	{	
 		vec_foreach(&files, filename, i)
 		{
-
 			//Get the extension for the file
 			char* extension;
 			size_t extLen;
-			cwk_path_get_extension(filename->data, &extension, &extLen);
-
-			//If it ends in .c then add it to the vector.
-			if(strcmp(extension, ".c") == 0)
+			if(cwk_path_has_extension(filename->data))
 			{
-				vec_push(&sourceFiles, (void*)filename);
+				cwk_path_get_extension(filename->data, &extension, &extLen);
+					
+				//If it ends in .c then add it to the vector.
+				if(strcmp(extension, ".c") == 0)
+				{
+					vec_push(&sourceFiles, (void*)filename);
+				}
 			}
+			
 		}
 	}
 	return sourceFiles;
