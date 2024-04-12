@@ -11,6 +11,12 @@ leak:
 	make;
 	valgrind --leak-check=yes ./surveyor
 	
+test:
+	make clean;
+	cd ./tests; gcc -I../deps -I../deps/cwalk -I../modules tests.c -o all_tests.o -pthread -lcheck -lsubunit -lrt -lm; ./all_tests.o
+	rm -rf ./tests/getfilestest
+
 clean:
 	rm -rf ./surveyor
-	rm -rf ./test/unit
+	rm -rf ./tests/.o
+	rm -rf ./tests/getfilestest

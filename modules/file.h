@@ -12,11 +12,10 @@
 
 //Build Path Header Includes
 //ie #include <stdlib.h>
-
+#include<vec/vec.h>
 
 //Local Headers
 //ie #include "somefile.h"
-
 
 //Variables
 
