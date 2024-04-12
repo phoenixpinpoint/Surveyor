@@ -4,7 +4,7 @@ This page is the official roadmap for Surveyor. As Features are completed they a
 
 ## 0.2.0
 - ~~Style Guide~~
-- Moving main()
+- ~~Moving main()~~
 - File Module
 - JSON to Data Structure Module
 

@@ -1,9 +1,9 @@
 surveyor:
-	gcc -Ideps -Ideps/cwalk surveyor.c -o surveyor
+	gcc -Ideps -Ideps/cwalk main.c -o surveyor
 
 local: 
 	clib install;
-	gcc -Ideps -Ideps/cwalk surveyor.c -o surveyor;
+	gcc -Ideps -Ideps/cwalk main.c -o surveyor;
 	mv ./surveyor /usr/local/bin;
 
 leak:
