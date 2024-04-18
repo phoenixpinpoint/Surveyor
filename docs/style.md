@@ -26,7 +26,7 @@ Version: 1.0
 //Local Headers
 //ie #include "somefile.h"
 
-//Variables
+//Variables and Data Structures
 
 //Function Prototypes
 
