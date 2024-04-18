@@ -32,49 +32,6 @@ vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
     return dependencies;
 }
 
-//Looks in the deps/{dependency} directory and grabs all .c files. 
-//Returns a vector of buffer_t's
-vec_void_t getSourceFilesInDirectory(char* dirPath)
-{
-    //Create a vector to store the fileNames as buffer_t's
-    vec_void_t fileNames;
-    vec_init(&fileNames);
-
-    //Initialize the DIR d and dirent struct dir   
-    DIR *d;
-    struct dirent *dir;
-
-    //open the dirpath
-    //Ex: ./deps
-    d = opendir(dirPath);
-
-    if(d) {//If the directory is actually open
-        while((dir = readdir(d)) != NULL)//For all files and folders
-        {
-            if(strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
-            {
-                //Get the directory name
-                buffer_t* dirNameBuffer = buffer_new_with_copy(dir->d_name);
-
-                //Get the extension for the file
-                char* extension;
-                size_t extLen;
-                cwk_path_get_extension(dirNameBuffer->data, &extension, &extLen);
-
-                //If it ends in .c then add it to the vector.
-                if(strcmp(extension, ".c") == 0)
-                {
-                    vec_push(&fileNames, (void*)dirNameBuffer);
-                }
-            }   
-        }
-    }
-
-    //Clean up and return
-    closedir(d);
-    return fileNames;
-}
-
 //Opens a given clib.json and gets the dependencies.
 //Returns 0 if completed successfully, -1 on error. 
 int parseClib(char* path)
@@ -142,7 +99,8 @@ int parseClib(char* path)
         sourcePath = buffer_slice(sourcePath, 0, lenOfDirPath);
         
         //Get all source files from that directory.
-        vec_void_t sourceFiles = getSourceFilesInDirectory(sourcePath->data);
+		vec_void_t allFiles = srvyr_get_files_in_directory(sourcePath->data); //Get all files within the directory
+		vec_void_t sourceFiles = srvyr_get_source_files(allFiles); //Determine which files are source files
 
         //For each of the files
         for (int i = 0; i < sourceFiles.length; i++)

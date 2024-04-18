@@ -20,10 +20,6 @@ vec_void_t srcPaths;
 //Adds each dependency to the vector.
 vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject);
 
-//Looks in the deps/{dependency} directory and grabs all .c files. 
-//Returns a vector of buffer_t's
-vec_void_t getSourceFilesInDirectory(char* dirPath);
-
 //Opens a given clib.json and gets the dependencies.
 //Returns 0 if completed successfully, -1 on error. 
 int parseClib(char* path);
