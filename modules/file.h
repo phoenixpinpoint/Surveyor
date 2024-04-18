@@ -12,8 +12,8 @@
 
 //Build Path Header Includes
 //ie #include <stdlib.h>
-#include<vec/vec.h>
-#include<cwalk/cwalk.h>
+#include <vec/vec.h>
+#include <cwalk/cwalk.h>
 
 //Local Headers
 //ie #include "somefile.h"

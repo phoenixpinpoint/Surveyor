@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#include<cwalk/cwalk.h>
-#include<vec/vec.h>
-#include<buffer/buffer.h>
+#include <cwalk/cwalk.h>
+#include <vec/vec.h>
+#include <buffer/buffer.h>
 
 //Looks in the deps/ directory and grabs files/folders
 //Returns a vector of buffer_t's
@@ -61,7 +61,7 @@ vec_void_t srvyr_get_source_files(vec_void_t files)
 		vec_foreach(&files, filename, i)
 		{
 			//Get the extension for the file
-			char* extension;
+			const char* extension;
 			size_t extLen;
 			if(cwk_path_has_extension(filename->data))
 			{
