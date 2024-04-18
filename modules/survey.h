@@ -1,7 +1,7 @@
 /** @file survey.h
  * 
  * @brief The basis of the survey module
- 
+ *
  * Copyright (C) 2024 Diamond Grade Labs.
  * This file is part of the Surveyor C package manager software. 
  * This software is part of the GNU GPL 3.0 License. 
@@ -26,10 +26,13 @@ typedef struct SurveyFile {
 	buffer_t* license;
 	buffer_t* src;
     buffer_t* keywords;
-	vec_void_t* dependencies;
-	vec_void_t* development	;
+	vec_void_t dependencies;
+	vec_void_t development;
 } SurveyFile_t;
 
 //Function Prototypes
+
+// Intialize a SurveyFile Data Structure
+SurveyFile_t* srvyr_survey_init(buffer_t* surveyVersion, buffer_t* name);
 
 #endif

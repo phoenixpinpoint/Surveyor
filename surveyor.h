@@ -12,6 +12,7 @@
 #include <cwalk/cwalk.h>
 
 #include "modules/file.h"
+#include "modules/survey.h"
 
 //Vector to store the paths
 vec_void_t srcPaths;
