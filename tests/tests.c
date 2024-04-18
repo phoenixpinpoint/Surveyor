@@ -6,9 +6,8 @@
 #include <cwalk/cwalk.c>
 #include <parson/parson.c>
 #include <vec/vec.c>
-#include <file.c>
 
-#include <file.h>
+#include "../modules/file.c"
 
 #include "file.c"
 #include "../surveyor.c"

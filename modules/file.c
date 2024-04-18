@@ -9,8 +9,11 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #include<cwalk/cwalk.h>
+#include<vec/vec.h>
+#include<buffer/buffer.h>
 
 //Looks in the deps/ directory and grabs files/folders
 //Returns a vector of buffer_t's

@@ -1,12 +1,12 @@
 #include <check.h>
-#include <file.h>
+#include "../modules/file.h"
 
 #include <fs/fs.h>
 #include <buffer/buffer.h>
 
 START_TEST(get_files)
 {	
-	printf("%s\n\0", "CHECKING GET FILES");
+	printf("%s\n", "CHECKING GET FILES");
 	//Create the test directory and files
 	ck_assert_int_eq(fs_mkdir("getfilestest", 0777), 0);
 	FILE *testcfile = fs_open("getfilestest/main.c", "w");
@@ -31,7 +31,7 @@ END_TEST
 
 START_TEST(get_sources)
 {
-	printf("%s\n\0", "CHECKING GET SOURCE");
+	printf("%s\n", "CHECKING GET SOURCE");
 	vec_void_t files = srvyr_get_files_in_directory("getfilestest");
 	vec_void_t sourceFiles = srvyr_get_source_files(files);
 	ck_assert_int_eq(sourceFiles.length, 1);
@@ -46,7 +46,7 @@ START_TEST(get_sources)
 
 START_TEST(issue_1_included_a_make_file)
 {
-	printf("%s\n\0", "CHECKING 1-included-a-makefile");
+	printf("%s\n", "CHECKING 1-included-a-makefile");
 	FILE *testmakefile = fs_open("getfilestest/Makefile", "w");
 	ck_assert_int_eq(fs_exists("getfilestest/Makefile"), 0);
 	
