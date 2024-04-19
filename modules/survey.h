@@ -18,6 +18,7 @@
 
 //Variables and Data Structures
 typedef struct SurveyFile {
+	buffer_t* surveyVersion;
 	buffer_t* version;
 	buffer_t* name;
 	buffer_t* repo;
@@ -44,5 +45,7 @@ void srvyr_set_survey_version(SurveyFile_t* survey, char* version);
 // Set the repo of the survey.
 void srvyr_set_survey_repo(SurveyFile_t* survey, char* repo);
 
+// Set the surveyVersion of the survey.
+void srvyr_set_survey_survey_version(SurveyFile_t* survey, char* surveyVersion);
 
 #endif

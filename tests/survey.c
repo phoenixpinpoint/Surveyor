@@ -91,6 +91,31 @@ START_TEST(set_repo)
 }
 END_TEST
 
+START_TEST(set_surveyVersion)
+{
+	printf("%s\n", "CHECKING SET SURVEYVERSION");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+	buffer_free(survey->surveyVersion);
+	survey->surveyVersion = NULL;
+
+	//Set the first time
+	srvyr_set_survey_survey_version(survey, "1.0");
+	ck_assert_str_eq(survey->surveyVersion->data,"1.0");
+
+	//Set the name the second time
+	srvyr_set_survey_survey_version(survey, "1.1");
+	ck_assert_str_eq(survey->surveyVersion->data,"1.1");
+
+	buffer_free(survey->name);
+	buffer_free(survey->version);
+	buffer_free(survey->surveyVersion);
+	free(survey);
+}
+END_TEST
+
+
 Suite* survey_suite(void)
 {
 	Suite *s;
@@ -103,6 +128,7 @@ Suite* survey_suite(void)
 	tcase_add_test(tc_survey, set_name);
 	tcase_add_test(tc_survey, set_version);
 	tcase_add_test(tc_survey, set_repo);
+	tcase_add_test(tc_survey, set_surveyVersion);
 	suite_add_tcase(s, tc_survey);
 	
 	return s;

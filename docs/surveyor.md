@@ -49,7 +49,7 @@ Basic clibs.json example.
 
 
 ### Survey.json (v1.0) [Implementing in 0.3.0]
-Survey.json allows users to specify which version of survey.json they are using as well as dependency type and location.
+Survey.json allows users to specify which version of survey.json they are using as well as dependency type and location. This is the default version none is specified as of version 0.2.0.
 ```json
 {
   "surveyVersion": "1.0",
