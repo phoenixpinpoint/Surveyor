@@ -17,7 +17,6 @@ START_TEST(get_files)
 	//Check output
 	vec_void_t files;
 	int i;
-	buffer_t *buffer;
 
 	files = srvyr_get_files_in_directory("getfilestest");
 	ck_assert_int_eq(files.length, 2);

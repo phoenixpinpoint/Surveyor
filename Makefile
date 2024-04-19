@@ -1,6 +1,10 @@
 surveyor:
 	gcc -Ideps -Ideps/cwalk main.c -o surveyor
 
+debug: 
+	gcc -Ideps -Ideps/cwalk -g main.c -o surveyor_debug;
+	gdb surveyor_debug;
+
 local: 
 	clib install;
 	gcc -Ideps -Ideps/cwalk main.c -o surveyor;
@@ -24,8 +28,14 @@ clean:
 	rm -rf ./tests/*.gcov
 	rm -rf ./tests/*.gcda
 	rm -rf ./tests/*.gcno
+	rm -rf ./tests/debug_tests
 
 coverage:
 	make clean;
 	gcc -fprofile-arcs -ftest-coverage -Ideps -Ideps/cwalk -Imodules tests/tests.c -o tests/coverage.o -pthread -lcheck -lsubunit -lrt -lm; ./tests/coverage.o
 	mv ./tests.gcda ./tests; mv ./tests.gcno ./tests; cd tests; gcov tests.c
+
+debugt: 
+	make clean;
+	cd ./tests; gcc -I../deps -I../deps/cwalk -I../modules -g tests.c -o debug_tests -pthread -lcheck -lsubunit -lrt -lm; gdb debug_tests;
+	rm -rf ./tests/getfilestest

@@ -33,6 +33,12 @@ typedef struct SurveyFile {
 //Function Prototypes
 
 // Intialize a SurveyFile Data Structure
-SurveyFile_t* srvyr_survey_init(buffer_t* surveyVersion, buffer_t* name);
+SurveyFile_t* srvyr_survey_init(char* surveyVersion, char* name);
+
+// Set the name of the survey.
+void srvyr_set_survey_name(SurveyFile_t* survey, char* name);
+
+// Set the version of the survey.
+void srvyr_set_survey_version(SurveyFile_t* survey, char* version);
 
 #endif
