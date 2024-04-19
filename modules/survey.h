@@ -41,4 +41,8 @@ void srvyr_set_survey_name(SurveyFile_t* survey, char* name);
 // Set the version of the survey.
 void srvyr_set_survey_version(SurveyFile_t* survey, char* version);
 
+// Set the repo of the survey.
+void srvyr_set_survey_repo(SurveyFile_t* survey, char* repo);
+
+
 #endif

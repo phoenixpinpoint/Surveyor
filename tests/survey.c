@@ -25,8 +25,9 @@ START_TEST(set_name)
 	printf("%s\n", "CHECKING SET NAME");
 	
 	//Create a blank Survey File
-	SurveyFile_t* survey = (SurveyFile_t*)malloc(1*sizeof(SurveyFile_t));
-	ck_assert_ptr_nonnull(survey);
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+	buffer_free(survey->name);
+	survey->name = NULL;
 
 	//Set the name for the first time
 	srvyr_set_survey_name(survey, "FIRSTNAME");
@@ -37,8 +38,8 @@ START_TEST(set_name)
 	ck_assert_str_eq(survey->name->data, "SECONDNAME");
 
 	buffer_free(survey->name);
+	buffer_free(survey->version);
 	free(survey);
-	
 }
 END_TEST
 
@@ -47,8 +48,9 @@ START_TEST(set_version)
 	printf("%s\n", "CHECKING SET VERSION");
 	
 	//Create a blank Survey File
-	SurveyFile_t* survey = (SurveyFile_t*)malloc(1*sizeof(SurveyFile_t));
-	ck_assert_ptr_nonnull(survey);
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+	buffer_free(survey->version);
+	survey->version = NULL;
 
 	//Set the name for the first time
 	srvyr_set_survey_version(survey, "1.0");
@@ -58,7 +60,32 @@ START_TEST(set_version)
 	srvyr_set_survey_version(survey, "2.0");
 	ck_assert_str_eq(survey->version->data, "2.0");
 
+	buffer_free(survey->name);
 	buffer_free(survey->version);
+	free(survey);
+	
+}
+END_TEST
+
+
+START_TEST(set_repo)
+{
+	printf("%s\n", "CHECKING SET REPO");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+
+	//Set the name for the first time
+	srvyr_set_survey_repo(survey, "https://example.com/repo");
+	ck_assert_str_eq(survey->repo->data,"https://example.com/repo");
+
+	//Set the name the second time
+	srvyr_set_survey_repo(survey, "https://example.com/repo2");
+	ck_assert_str_eq(survey->repo->data,"https://example.com/repo2");
+
+	buffer_free(survey->version);
+	buffer_free(survey->name);
+	buffer_free(survey->repo);
 	free(survey);
 	
 }
@@ -75,6 +102,7 @@ Suite* survey_suite(void)
 	tcase_add_test(tc_survey, init_survey);
 	tcase_add_test(tc_survey, set_name);
 	tcase_add_test(tc_survey, set_version);
+	tcase_add_test(tc_survey, set_repo);
 	suite_add_tcase(s, tc_survey);
 	
 	return s;

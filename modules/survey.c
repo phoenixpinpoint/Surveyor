@@ -13,8 +13,16 @@
 SurveyFile_t* srvyr_survey_init(char* version, char* name)
 {
 	SurveyFile_t* survey = (SurveyFile_t*)malloc(1*sizeof(SurveyFile_t));
-	survey->version =  buffer_new_with_copy(version);
-	survey->name = buffer_new_with_copy(name);
+	survey->version = NULL;
+	survey->name = NULL;
+	survey->repo = NULL;
+	survey->install = NULL;
+	survey->makefile = NULL;
+	survey->license = NULL;
+	survey->src = NULL;
+	survey->keywords = NULL;
+	srvyr_set_survey_version(survey, version);
+	srvyr_set_survey_name(survey, name);
 	return survey;
 }
 
@@ -29,7 +37,6 @@ void srvyr_set_survey_name(SurveyFile_t* survey, char* name)
 
 	//Set the name to a new buffer.
 	survey->name = buffer_new_with_copy(name);
-
 	return;
 }
 
@@ -48,4 +55,18 @@ void srvyr_set_survey_version(SurveyFile_t* survey, char* version)
 	return;
 }
 
+// Set the repo of the survey.
+void srvyr_set_survey_repo(SurveyFile_t* survey, char* repo)
+{
+	// If the Buffer already exists free it. 
+	if(survey->repo != NULL)
+	{
+		buffer_free(survey->repo);
+	}
+
+	//Set the repo to a new buffer.
+	survey->repo = buffer_new_with_copy(repo);
+
+	return;
+}
 
