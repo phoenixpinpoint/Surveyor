@@ -20,8 +20,17 @@ SurveyFile_t* srvyr_survey_init(char* version, char* name)
 	survey->install = NULL;
 	survey->makefile = NULL;
 	survey->license = NULL;
-	survey->src = NULL;
-	survey->keywords = NULL;
+	vec_void_t src;
+	vec_init(&src);
+	survey->src = src;
+	vec_void_t keywords;
+	vec_init(&keywords);
+	survey->keywords = keywords;
+	vec_void_t dependencies;
+	vec_init(&dependencies);
+	vec_void_t development;
+	vec_init(&development);
+	survey->development = development;
 	srvyr_set_survey_survey_version(survey, "1.0");
 	srvyr_set_survey_version(survey, version);
 	srvyr_set_survey_name(survey, name);
@@ -83,6 +92,67 @@ void srvyr_set_survey_survey_version(SurveyFile_t* survey, char* surveyVersion)
 
 	//Set the surveyVersion to a new buffer.
 	survey->surveyVersion = buffer_new_with_copy(surveyVersion);
+
+	return;
+}
+
+// Set the install of the survey.
+void srvyr_set_survey_install(SurveyFile_t* survey, char* install)
+{
+	// If the Buffer already exists free it. 
+	if(survey->install != NULL)
+	{
+		buffer_free(survey->install);
+	}
+
+	//Set the new buffer.
+	survey->install = buffer_new_with_copy(install);
+
+	return;
+}
+
+// Set the uninstall of the survey.
+void srvyr_set_survey_uninstall(SurveyFile_t* survey, char* uninstall)
+{
+	// If the Buffer already exists free it. 
+	if(survey->uninstall != NULL)
+	{
+		buffer_free(survey->uninstall);
+	}
+
+	//Set the new buffer.
+	survey->uninstall = buffer_new_with_copy(uninstall);
+
+	return;
+}
+
+
+// Set the makefile of the survey.
+void srvyr_set_survey_makefile(SurveyFile_t* survey, char* makefile)
+{
+	// If the Buffer already exists free it. 
+	if(survey->makefile != NULL)
+	{
+		buffer_free(survey->makefile);
+	}
+
+	//Set the new buffer.
+	survey->makefile = buffer_new_with_copy(makefile);
+
+	return;
+}
+
+// Set the license of the survey.
+void srvyr_set_survey_license(SurveyFile_t* survey, char* license)
+{
+	// If the Buffer already exists free it. 
+	if(survey->license != NULL)
+	{
+		buffer_free(survey->license);
+	}
+
+	//Set the new buffer.
+	survey->license = buffer_new_with_copy(license);
 
 	return;
 }

@@ -115,6 +115,94 @@ START_TEST(set_surveyVersion)
 }
 END_TEST
 
+START_TEST(set_install)
+{
+	printf("%s\n", "CHECKING SET INSTALL");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+
+	//Set the first time
+	srvyr_set_survey_install(survey, "INS1");
+	ck_assert_str_eq(survey->install->data,"INS1");
+
+	//Set the name the second time
+	srvyr_set_survey_install(survey, "INS2");
+	ck_assert_str_eq(survey->install->data,"INS2");
+
+	buffer_free(survey->name);
+	buffer_free(survey->version);
+	buffer_free(survey->install);
+	free(survey);
+}
+END_TEST
+
+START_TEST(set_uninstall)
+{
+	printf("%s\n", "CHECKING SET UNINSTALL");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+
+	//Set the first time
+	srvyr_set_survey_uninstall(survey, "UNINS1");
+	ck_assert_str_eq(survey->uninstall->data,"UNINS1");
+
+	//Set the name the second time
+	srvyr_set_survey_uninstall(survey, "UNINS2");
+	ck_assert_str_eq(survey->uninstall->data,"UNINS2");
+
+	buffer_free(survey->name);
+	buffer_free(survey->version);
+	buffer_free(survey->uninstall);
+	free(survey);
+}
+END_TEST
+
+START_TEST(set_makefile)
+{
+	printf("%s\n", "CHECKING SET MAKEFILE");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+
+	//Set the first time
+	srvyr_set_survey_makefile(survey, "MakeFile");
+	ck_assert_str_eq(survey->makefile->data,"MakeFile");
+
+	//Set the name the second time
+	srvyr_set_survey_makefile(survey, "Makefile");
+	ck_assert_str_eq(survey->makefile->data,"Makefile");
+
+	buffer_free(survey->name);
+	buffer_free(survey->version);
+	buffer_free(survey->makefile);
+	free(survey);
+}
+END_TEST
+
+START_TEST(set_license)
+{
+	printf("%s\n", "CHECKING SET LICENSE");
+	
+	//Create a blank Survey File
+	SurveyFile_t* survey = srvyr_survey_init("1.0", "name");
+
+	//Set the first time
+	srvyr_set_survey_license(survey, "ISC");
+	ck_assert_str_eq(survey->license->data,"ISC");
+
+	//Set the name the second time
+	srvyr_set_survey_license(survey, "GPL");
+	ck_assert_str_eq(survey->license->data,"GPL");
+
+	buffer_free(survey->name);
+	buffer_free(survey->version);
+	buffer_free(survey->license);
+	free(survey);
+}
+END_TEST
+
 
 Suite* survey_suite(void)
 {
@@ -129,6 +217,10 @@ Suite* survey_suite(void)
 	tcase_add_test(tc_survey, set_version);
 	tcase_add_test(tc_survey, set_repo);
 	tcase_add_test(tc_survey, set_surveyVersion);
+	tcase_add_test(tc_survey, set_install);
+	tcase_add_test(tc_survey, set_uninstall);
+	tcase_add_test(tc_survey, set_makefile);
+	tcase_add_test(tc_survey, set_license);
 	suite_add_tcase(s, tc_survey);
 	
 	return s;
