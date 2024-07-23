@@ -72,6 +72,14 @@ vec_void_t srvyr_get_source_files(vec_void_t files)
 				{
 					vec_push(&sourceFiles, (void*)filename);
 				}
+				else if (strcmp(extension, ".cpp") == 0)
+				{
+					vec_push(&sourceFiles, (void*)filename);
+				}
+				else if (strcmp(extntion, ".cxx") == 0)
+				{
+					vec_push(&sourceFiles, (void*)filename);	
+				}
 			}
 			
 		}

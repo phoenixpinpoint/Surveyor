@@ -18,6 +18,7 @@
 
 //Variables and Data Structures
 typedef struct SurveyFile {
+	int clibFlag;
 	buffer_t* surveyVersion;
 	buffer_t* version;
 	buffer_t* name;
@@ -60,5 +61,8 @@ void srvyr_set_survey_makefile(SurveyFile_t* survey, char* makefile);
 
 // Set the license of the survey.
 void srvyr_set_survey_license(SurveyFile_t* survey, char* license);
+
+// Load Survey
+void srvyr_load_survey(SurveyFile_t* survey, char* content);
 
 #endif

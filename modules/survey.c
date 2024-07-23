@@ -156,3 +156,10 @@ void srvyr_set_survey_license(SurveyFile_t* survey, char* license)
 
 	return;
 }
+
+// Load Survey
+void srvyr_load_survey(SurveyFile_t* survey, char* content)
+{
+	return;	
+}
+
