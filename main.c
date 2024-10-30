@@ -17,7 +17,16 @@ int main()
 
     //Begin Parsing the Root clib.json
     fLOG_INFO(fhl, "Parsing initial clib.json");
-    parseClib("clib.json\0");
+    int parseStatus = parseClib("clib.json\0");
+    if (parseStatus < 0)
+    {
+        fLOG_ERROR(fhl, "Failed to parse clib.json");
+        return -1;
+    }
+    else
+    {
+        fLOG_INFO(fhl, "Successfully parsed clib.json");
+    }
     
     //Open survey.c
     FILE* survey = fopen("./survey.c", "w+");
@@ -48,6 +57,7 @@ int main()
         if (fputsErrorFlag < 0)
         {
             fLOG_ERROR(fhl, "Failed to write to survey.c");
+            vec_deinit(&srcPaths);
             return -1;
         }
         else
@@ -58,6 +68,7 @@ int main()
     }
     else {//write failure.
         fLOG_ERROR(fhl, "Failed to open survey.c");
+        vec_deinit(&srcPaths);
         return -1;
     }
 
