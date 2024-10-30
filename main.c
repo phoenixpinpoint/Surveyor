@@ -10,7 +10,7 @@ file_logger *fhl;
 int main() 
 {
     fhl = new_file_logger("surveyor.log", false);
-    fLOG_INFO(fhl, "Surveyor v1.0");
+    fLOG_INFO(fhl, "Surveyor v0.3.0");
 
     //vec_init(&dependencies);
     vec_init(&srcPaths);
