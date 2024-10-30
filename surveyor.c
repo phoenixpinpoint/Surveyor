@@ -1,5 +1,7 @@
 #include "surveyor.h"
 
+extern file_logger *fhl;
+
 //Parses a JSON_Object(clib dependencies object)
 //Adds each dependency to the vector.
 vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
@@ -37,34 +39,36 @@ vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
 int parseClib(char* path)
 {
     //Open clibs.json
-    printf("Opening %s", path);
+    //printf("Opening %s", path);
     FILE *clib = fopen(path, "r");
     if(clib != NULL)//File is open.
     {
-        printf("....success\n");
+        //printf("....success\n");
     }
     else {//File is not open.
-        printf("....failed\n");
+        //printf("....failed\n");
+        fLOGF_ERROR(fhl, "File %s failed to open", path);
         return -1;
     }
 
     //Read file into buffer
-    printf("Reading %s", path);
+    //printf("Reading %s", path);
     buffer_t* clibContents = buffer_new_with_copy(fs_fread(clib));
 
     //Check the length of contents
     if (strlen(clibContents->data) > 0)
     {
-        printf("....success\n");
+        //printf("....success\n");
     }
     else
     {
-        printf("....failed\n");
+        //printf("....failed\n");
+        fLOGF_ERROR(fhl, "Contents of %s are empty", path);
         return -1;
     }
 
     //Parse the JSON.
-    printf("Parsing %s", path);
+    //printf("Parsing %s", path);
     JSON_Value *root;
     JSON_Object *file;
     JSON_Object *dependenciesObject;
@@ -73,11 +77,11 @@ int parseClib(char* path)
     root = json_parse_string(clibContents->data);
     if (json_value_get_type(root) != JSONObject) 
     {
-        printf("....failed\n");
+        fLOGF_ERROR(fhl, "Failed to parse JSON of %s", path);
         return -1;
     }
     else {
-        printf("....success\n");
+        //printf("....success\n");
     }
 
     file = json_value_get_object(root);
@@ -89,7 +93,7 @@ int parseClib(char* path)
         //Get the name of the module
         buffer_t* dependencyName = buffer_new_with_copy(json_object_get_string(file, "name"));
 
-        printf("Getting sources for %s", path);
+        fLOGF_INFO(fhl, "Getting sources for %s", path);
         //Create a new buffer for the sourcePath. 
         buffer_t* sourcePath = buffer_new_with_copy(path);
         size_t lenOfDirPath;
@@ -135,11 +139,11 @@ int parseClib(char* path)
         buffer_free(sourcePath);
         buffer_free(dependencyName);
         vec_deinit(&sourceFiles);
-        printf("....success\n");
+        //printf("....success\n");
     }
 
     //Determine the source files for all dependencies:
-    printf("Getting dependencies for %s", path);
+    fLOGF_INFO(fhl, "Getting dependencies for %s", path);
     //Get the Dependencies object from the clib.json/package.json
     dependenciesObject = json_object_get_object(file, "dependencies");
 
@@ -184,7 +188,7 @@ int parseClib(char* path)
     } 
     else 
     {
-        printf("....success\n");
+        //printf("....success\n");
     }
     
 

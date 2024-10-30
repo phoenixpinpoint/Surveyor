@@ -25,4 +25,5 @@ tags
 [._]*.un~
 
 ./survey.c
+surveyor.log
 

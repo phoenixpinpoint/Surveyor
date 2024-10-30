@@ -1,13 +1,13 @@
 surveyor:
-	gcc -Ideps -Ideps/cwalk main.c -o surveyor
+	gcc -Ideps -Ideps/cwalk -pthread main.c -o surveyor
 
 debug: 
-	gcc -Ideps -Ideps/cwalk -g main.c -o surveyor_debug;
+	gcc -Ideps -Ideps/cwalk -pthread -g main.c -o surveyor_debug;
 	gdb surveyor_debug;
 
 local: 
 	clib install;
-	gcc -Ideps -Ideps/cwalk main.c -o surveyor;
+	gcc -Ideps -Ideps/cwalk -pthread main.c -o surveyor;
 	mv ./surveyor /usr/local/bin;
 
 leak:

@@ -3,12 +3,13 @@
 
 #include <stdio.h>
 #include <dirent.h> 
+#include <stdbool.h>
 
 #include <buffer/buffer.h>
 #include <parson/parson.h>
 #include <vec/vec.h>
 #include <fs/fs.h>
-
+#include <ulog/logger.h>
 #include <cwalk/cwalk.h>
 
 #include "modules/file.h"

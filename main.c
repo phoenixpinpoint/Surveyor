@@ -1,34 +1,35 @@
 #include "surveyor.h"
 
-#include <buffer/buffer.c>
-#include <parson/parson.c>
-#include <cwalk/cwalk.c>
-#include <vec/vec.c>
-#include <fs/fs.c>
-
 #include "modules/file.c"
 #include "surveyor.c"
 
+#include "survey.c"
+
+file_logger *fhl;
+
 int main() 
 {
-    printf("Surveyor v1.0\n");
-    printf("=============\n");
+    fhl = new_file_logger("surveyor.log", false);
+    fLOG_INFO(fhl, "Surveyor v1.0");
 
     //vec_init(&dependencies);
     vec_init(&srcPaths);
 
     //Begin Parsing the Root clib.json
+    fLOG_INFO(fhl, "Parsing initial clib.json");
     parseClib("clib.json\0");
-
+    
     //Open survey.c
     FILE* survey = fopen("./survey.c", "w+");
+    //FILE* survey = fopen("./survey.c", "r");
 
-    printf("writing to survey.c");
+    fLOG_INFO(fhl, "Writing to survey.c");
 
     //If the file opens
     if (survey)
     {
         //For each src file
+        int fputsErrorFlag = 0;
         for(int i = 0; i < srcPaths.length; i++)
         {
             //Build the #include <{src/src.c}> line
@@ -37,16 +38,27 @@ int main()
             buffer_append(source, ">\n");
 
             //Write it to the file.
-            fputs(source->data, survey);
+            fputsErrorFlag = fputs(source->data, survey);
 
             buffer_free(source);
 
         }
         fclose(survey);
-        printf("....success\n");
+
+        if (fputsErrorFlag < 0)
+        {
+            fLOG_ERROR(fhl, "Failed to write to survey.c");
+            return -1;
+        }
+        else
+        {
+            fLOG_INFO(fhl, "Successfully wrote to survey.c");
+        }
+        //printf("....success\n");
     }
     else {//write failure.
-        printf("....failed\n");
+        fLOG_ERROR(fhl, "Failed to open survey.c");
+        return -1;
     }
 
     //Clean-up

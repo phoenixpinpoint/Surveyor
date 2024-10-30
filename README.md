@@ -5,6 +5,9 @@ Surveyor reads clibs.json of the root file, goes through the dependencies and gr
 
 It then builds a survey.c file to be included in your root compilation. 
 
+# GNU Dependencies
+- pthread
+
 # Use
 ```bash
 ./surveyor
