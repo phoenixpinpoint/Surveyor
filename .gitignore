@@ -24,6 +24,6 @@ tags
 # Persistent undo
 [._]*.un~
 
-./survey.c
+survey.c
 surveyor.log
 

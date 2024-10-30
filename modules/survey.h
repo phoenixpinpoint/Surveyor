@@ -13,16 +13,18 @@
 //Build Path Header Includes
 #include <buffer/buffer.h>
 #include <vec/vec.h>
+#include <parson/parson.h>
 
 //Local Headers
 
 //Variables and Data Structures
-typedef struct SurveyFile {
+typedef struct survey_file {
 	int clibFlag;
 	buffer_t* surveyVersion;
 	buffer_t* version;
 	buffer_t* name;
 	buffer_t* repo;
+	buffer_t* type;
 	buffer_t* install;
 	buffer_t* uninstall;
 	buffer_t* makefile;
@@ -31,38 +33,41 @@ typedef struct SurveyFile {
     vec_void_t keywords;
 	vec_void_t dependencies;
 	vec_void_t development;
-} SurveyFile_t;
+} survey_file_t;
 
 //Function Prototypes
 
 // Intialize a SurveyFile Data Structure
-SurveyFile_t* srvyr_survey_init(char* surveyVersion, char* name);
+survey_file_t* srvyr_survey_init(char* surveyVersion, char* name);
 
 // Set the name of the survey.
-void srvyr_set_survey_name(SurveyFile_t* survey, char* name);
+void srvyr_set_survey_name(survey_file_t* survey, char* name);
 
 // Set the version of the survey.
-void srvyr_set_survey_version(SurveyFile_t* survey, char* version);
+void srvyr_set_survey_version(survey_file_t* survey, char* version);
 
 // Set the repo of the survey.
-void srvyr_set_survey_repo(SurveyFile_t* survey, char* repo);
+void srvyr_set_survey_repo(survey_file_t* survey, char* repo);
+
+// Set the type of the survey.
+void srvyr_set_survey_type(survey_file_t* survey, char* type);
 
 // Set the surveyVersion of the survey.
-void srvyr_set_survey_survey_version(SurveyFile_t* survey, char* surveyVersion);
+void srvyr_set_survey_survey_version(survey_file_t* survey, char* surveyVersion);
 
 // Set the install of the survey.
-void srvyr_set_survey_install(SurveyFile_t* survey, char* install);
+void srvyr_set_survey_install(survey_file_t* survey, char* install);
 
 // Set the uninstall of the survey.
-void srvyr_set_survey_uninstall(SurveyFile_t* survey, char* uninstall);
+void srvyr_set_survey_uninstall(survey_file_t* survey, char* uninstall);
 
 // Set the makefile of the survey.
-void srvyr_set_survey_makefile(SurveyFile_t* survey, char* makefile);
+void srvyr_set_survey_makefile(survey_file_t* survey, char* makefile);
 
 // Set the license of the survey.
-void srvyr_set_survey_license(SurveyFile_t* survey, char* license);
+void srvyr_set_survey_license(survey_file_t* survey, char* license);
 
 // Load Survey
-void srvyr_load_survey(SurveyFile_t* survey, char* content);
+survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content);
 
 #endif

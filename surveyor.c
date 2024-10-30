@@ -40,7 +40,7 @@ int parseClib(char* path)
 {
     //Open clibs.json
     //printf("Opening %s", path);
-    FILE *clib = fopen(path, "r");
+    FILE *clib = fs_open(path, "r");
     if(clib != NULL)//File is open.
     {
         //printf("....success\n");
@@ -194,7 +194,7 @@ int parseClib(char* path)
 
     //Clean-up
     vec_deinit(&moduleDeps);
-    fclose(clib);
+    fs_close(clib);
     buffer_free(clibContents);
     json_value_free(root);
 
