@@ -10,7 +10,7 @@ This page is the official roadmap for Surveyor. As Features are completed they a
 
 ## 0.3.0
 - Survey Module
-~~- Add C++ Support (.cpp and .cxx)
+- ~~Add C++ Support (.cpp and .cxx)~~
 
 ## 0.4.0
 - Modular Builds
