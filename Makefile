@@ -8,7 +8,8 @@ debug:
 local: 
 	clib install;
 	gcc -Ideps -Ideps/cwalk -pthread main.c -o surveyor;
-	mv ./surveyor /usr/local/bin;
+	sudo rm -rf /usr/local/bin/surveyor;
+	sudo mv ./surveyor /usr/local/bin;
 
 leak:
 	make clean;
