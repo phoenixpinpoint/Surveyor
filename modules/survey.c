@@ -311,7 +311,7 @@ void srvyr_generate_survey()
             buffer_free(source);
 
         }
-        fclose(survey);
+        fs_close(survey);
 
         if (fputsErrorFlag < 0)
         {
