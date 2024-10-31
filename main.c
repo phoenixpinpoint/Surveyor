@@ -1,8 +1,8 @@
-#include "surveyor.h"
+#include "modules/surveyor.h"
 
 #include "modules/file.c"
 #include "modules/survey.c"
-#include "surveyor.c"
+#include "modules/surveyor.c"
 
 #include "survey.c"
 
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
         if (strncmp(argv[1], "install", 7) == 0)
         {
             fLOG_INFO(fhl, "Running Install");
+
         }
         else if (strncmp(argv[1], "uninstall", 9) == 0)
         {
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
     }
     else if (argc == 3)
     {
-        fLOGF_INFO(fhl, "Running Survey Generation for %s", argv[1]);
+        //fLOGF_INFO(fhl, "Running Survey Generation for %s", argv[1]);
     }
     else
     {

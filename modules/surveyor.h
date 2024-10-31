@@ -12,8 +12,8 @@
 #include <ulog/logger.h>
 #include <cwalk/cwalk.h>
 
-#include "modules/file.h"
-#include "modules/survey.h"
+#include "file.h"
+#include "survey.h"
 
 //Parses a JSON_Object(clib dependencies object)
 //Adds each dependency to the vector.
