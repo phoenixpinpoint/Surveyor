@@ -15,9 +15,6 @@
 #include "modules/file.h"
 #include "modules/survey.h"
 
-//Vector to store the paths
-vec_void_t srcPaths;
-
 //Parses a JSON_Object(clib dependencies object)
 //Adds each dependency to the vector.
 vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject);

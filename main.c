@@ -1,79 +1,83 @@
 #include "surveyor.h"
 
 #include "modules/file.c"
+#include "modules/survey.c"
 #include "surveyor.c"
 
 #include "survey.c"
 
 file_logger *fhl;
 
-int main() 
+int main(int argc, char *argv[]) 
 {
     fhl = new_file_logger("surveyor.log", false);
     fLOG_INFO(fhl, "Surveyor v0.3.0");
 
-    //vec_init(&dependencies);
-    vec_init(&srcPaths);
-
-    //Begin Parsing the Root clib.json
-    fLOG_INFO(fhl, "Parsing initial clib.json");
-    int parseStatus = parseClib("clib.json\0");
-    if (parseStatus < 0)
+    if (argc == 1)
     {
-        fLOG_ERROR(fhl, "Failed to parse clib.json");
-        return -1;
+        fLOG_INFO(fhl, "Running Default Survey Generation");
+        srvyr_generate_survey();
+
     }
-    else
+    else if (argc == 2)
     {
-        fLOG_INFO(fhl, "Successfully parsed clib.json");
-    }
-    
-    //Open survey.c
-    FILE* survey = fopen("./survey.c", "w+");
-    //FILE* survey = fopen("./survey.c", "r");
-
-    fLOG_INFO(fhl, "Writing to survey.c");
-
-    //If the file opens
-    if (survey)
-    {
-        //For each src file
-        int fputsErrorFlag = 0;
-        for(int i = 0; i < srcPaths.length; i++)
+        //Valid completions:
+        //install
+        //uninstall
+        if (strncmp(argv[1], "install", 7) == 0)
         {
-            //Build the #include <{src/src.c}> line
-            buffer_t* source = srcPaths.data[i];
-            buffer_prepend(source, "#include <");
-            buffer_append(source, ">\n");
-
-            //Write it to the file.
-            fputsErrorFlag = fputs(source->data, survey);
-
-            buffer_free(source);
-
+            fLOG_INFO(fhl, "Running Install");
         }
-        fclose(survey);
-
-        if (fputsErrorFlag < 0)
+        else if (strncmp(argv[1], "uninstall", 9) == 0)
         {
-            fLOG_ERROR(fhl, "Failed to write to survey.c");
-            vec_deinit(&srcPaths);
-            return -1;
+            fLOG_INFO(fhl, "Running Uninstall");
         }
         else
         {
-            fLOG_INFO(fhl, "Successfully wrote to survey.c");
+            fLOGF_ERROR(fhl, "%s is not a valid command", argv[1]);
+            return -1;
         }
-        //printf("....success\n");
     }
-    else {//write failure.
-        fLOG_ERROR(fhl, "Failed to open survey.c");
-        vec_deinit(&srcPaths);
+    else if (argc == 3)
+    {
+        fLOGF_INFO(fhl, "Running Survey Generation for %s", argv[1]);
+    }
+    else
+    {
+        fLOG_ERROR(fhl, "Invalid number of arguments");
         return -1;
     }
 
-    //Clean-up
-    vec_deinit(&srcPaths);
+    //Load the Root Survey/Clib File into the surveyor.
+    //Look in the current directory for clib.json or survey.json
+    int clibExists = fs_exists("./clib.json");
+    int surveyExists = fs_exists("./survey.json");
+    char* fileContents = 0;
+    survey_file_t* survey_struct = 0;
+    //If survey.json exists
+    if(surveyExists != -1)
+    {
+        fLOG_INFO(fhl, "survey.json exists using Surveyor format");
+        FILE* survey_fd = fs_open("./survey.json", "r");
+        fileContents = fs_fread(survey_fd);
+        fs_close(survey_fd);
+        survey_struct = srvyr_load_survey(survey_struct, fileContents);
+        survey_struct->clibFlag = 0;
+    }
+    else if (clibExists != -1 && surveyExists == -1)
+    {
+        fLOG_INFO(fhl, "clib.json exists using legacy Clib format");
+        FILE* clib_fd = fs_open("./clib.json", "r");
+        fileContents = fs_fread(clib_fd);
+        fs_close(clib_fd);
+        survey_struct = srvyr_load_survey(survey_struct, fileContents);
+        survey_struct->clibFlag = 1;
+    }
+    else
+    {
+        fLOG_ERROR(fhl, "No survey.json or clib.json found");
+        return -1;
+    }
 
     return 0;
 }

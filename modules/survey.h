@@ -14,6 +14,7 @@
 #include <buffer/buffer.h>
 #include <vec/vec.h>
 #include <parson/parson.h>
+#include <ulog/logger.h>
 
 //Local Headers
 
@@ -34,6 +35,10 @@ typedef struct survey_file {
 	vec_void_t dependencies;
 	vec_void_t development;
 } survey_file_t;
+
+//Vector to store the paths
+vec_void_t srcPaths;
+
 
 //Function Prototypes
 
@@ -69,5 +74,8 @@ void srvyr_set_survey_license(survey_file_t* survey, char* license);
 
 // Load Survey
 survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content);
+
+//Generate the survey.c file.
+void srvyr_generate_survey();
 
 #endif
