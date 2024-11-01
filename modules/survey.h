@@ -36,6 +36,12 @@ typedef struct survey_file {
 	vec_void_t development;
 } survey_file_t;
 
+typedef struct dependency {
+	buffer_t* name;
+	buffer_t* version;
+} dependency_t;
+
+
 //Vector to store the paths
 vec_void_t srcPaths;
 

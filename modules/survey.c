@@ -34,6 +34,7 @@ survey_file_t* srvyr_survey_init(char* version, char* name)
 	survey->keywords = keywords;
 	vec_void_t dependencies;
 	vec_init(&dependencies);
+	survey->dependencies = dependencies;
 	vec_void_t development;
 	vec_init(&development);
 	survey->development = development;
@@ -186,46 +187,55 @@ survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content)
 	JSON_Value* root = json_parse_string(content);
 	JSON_Object* file = json_value_get_object(root);
 	char* name = json_object_get_string(file, "name");
+	fLOGF_DEBUG(fhl, "Name: %s", name);
 	if (name != NULL)
 	{
 		survey->name = buffer_new_with_copy(name);
 	}
 	char* version = json_object_get_string(file, "version");
+	fLOGF_DEBUG(fhl, "Version: %s", version);
 	if (version != NULL)
 	{
 		survey->version = buffer_new_with_copy(version);
 	}
 	char* repo = json_object_get_string(file, "repo");
+	fLOGF_DEBUG(fhl, "Repo: %s", repo);
 	if (repo != NULL)
 	{
 		survey->repo = buffer_new_with_copy(repo);
 	}
 	char* type = json_object_get_string(file, "type");
+	fLOGF_DEBUG(fhl, "Type: %s", type);
 	if (type != NULL)
 	{
 		survey->type = buffer_new_with_copy(type);
 	}
 	char* surveyVersion = json_object_get_string(file, "surveyVersion");
+	fLOGF_DEBUG(fhl, "Survey Version: %s", surveyVersion);
 	if (surveyVersion != NULL)
 	{
 		survey->surveyVersion = buffer_new_with_copy(surveyVersion);
 	}
 	char* install = json_object_get_string(file, "install");
+	fLOGF_DEBUG(fhl, "Install: %s", install);
 	if (install != NULL)
 	{
 		survey->install = buffer_new_with_copy(install);
 	}
 	char* uninstall = json_object_get_string(file, "uninstall");
+	fLOGF_DEBUG(fhl, "Uninstall: %s", uninstall);
 	if (uninstall != NULL)
 	{
 		survey->uninstall = buffer_new_with_copy(uninstall);
 	}
 	char* makefile = json_object_get_string(file, "makefile");
+	fLOGF_DEBUG(fhl, "Makefile: %s", makefile);
 	if (makefile != NULL)
 	{
 		survey->makefile = buffer_new_with_copy(makefile);
 	}
 	char* license = json_object_get_string(file, "license");
+	fLOGF_DEBUG(fhl, "License: %s", license);
 	if (license != NULL)
 	{
 		survey->license = buffer_new_with_copy(license);
@@ -248,14 +258,20 @@ survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content)
 			vec_push(&survey->keywords, keyword);
 		}
 	}
-	JSON_Array* dependencies = json_object_get_array(file, "dependencies");
+	//Dpendencies is not an array but a JSON_Object
+	JSON_Object* dependencies = json_object_get_object(file, "dependencies");
 	if (dependencies != NULL)
-	{
-		for (int i = 0; i < json_array_get_count(dependencies); i++)
+	{		
+		for (int i = 0; i < json_object_get_count(dependencies); i++)
 		{
-			buffer_t* dependency = buffer_new_with_copy(json_array_get_string(dependencies, i));
+			dependency_t* dependency = (dependency_t*)malloc(1*sizeof(dependency_t));
+			dependency->name = buffer_new_with_copy(json_object_get_name(dependencies, i));
+			dependency->version = buffer_new_with_copy(json_object_get_string(dependencies, dependency->name->data));
 			vec_push(&survey->dependencies, dependency);
 		}
+	} 
+	else {
+		fLOG_DEBUG(fhl, "No dependencies found");
 	}
 	JSON_Array* development = json_object_get_array(file, "development");
 	if (development != NULL)
