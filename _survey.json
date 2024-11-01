@@ -1,0 +1,26 @@
+{
+    "name": "Surveyor",
+    "surveyVersion": "1.0",
+    "version": "0.3.0",
+    "repo": "phoenixpinpoint/Surveyor",
+    "type": "GitHub",
+    "description": "Dependency Builder Generator for C",
+    "keywords": [
+      "WebAssembly",
+      "WASM",
+      "c"
+    ],
+    "license": "MIT",
+    "dependencies": {
+      "clibs/buffer": "*",
+      "kgabis/parson": "*",
+      "likle/cwalk": "*",
+      "rxi/vec": "*",
+      "jwerle/fs.c": "*",
+      "phoenixpinpoint/ulog": "0.0.3"
+    },
+    "src": [
+      "surveyor.c"
+    ],
+    "install": "make local"
+  }

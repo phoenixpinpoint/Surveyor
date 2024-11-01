@@ -39,6 +39,7 @@ typedef struct survey_file {
 typedef struct dependency {
 	buffer_t* name;
 	buffer_t* version;
+	buffer_t* type;
 } dependency_t;
 
 
@@ -83,5 +84,8 @@ survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content);
 
 //Generate the survey.c file.
 void srvyr_generate_survey();
+
+// Initialize a Dependency Data Structure
+dependency_t* srvyr_dependency_init(char* name, char* version, char* type);
 
 #endif

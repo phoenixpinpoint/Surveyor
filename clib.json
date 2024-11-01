@@ -15,7 +15,8 @@
     "likle/cwalk": "*",
     "rxi/vec": "*",
     "jwerle/fs.c": "*",
-    "phoenixpinpoint/ulog": "0.0.3"
+    "phoenixpinpoint/ulog": "0.0.3",
+    "phoenixpinpoint/fido": "0.1.1"
   },
   "src": [
     "surveyor.c"

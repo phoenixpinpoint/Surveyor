@@ -1,5 +1,7 @@
 #include "surveyor.h"
 
+#include <fido/fido.h>
+
 extern file_logger *fhl;
 
 //Parses a JSON_Object(clib dependencies object)
@@ -174,7 +176,7 @@ int parseClib(char* path)
                 //Find the clib.json or package.json
                 buffer_t* fileAsBuff = (buffer_t*)filesInDepDir.data[j];
                 if(strcmp(fileAsBuff->data, "clib.json") == 0 || strcmp(fileAsBuff->data, "package.json") == 0){
-                    //Build the paht for it.
+                    //Build the path for it.
                     buffer_append(libPath, "/");
                     buffer_append(libPath, fileAsBuff->data);
                     //Call parseClib to get that modules dependencies
@@ -198,4 +200,94 @@ int parseClib(char* path)
     buffer_free(clibContents);
     json_value_free(root);
 
+}
+
+//Install a given github dependency
+char* srvyr_get_github_file(char* user, char* repo, char* file, char* version)
+{
+    //File is expected to be user/repo/file
+    buffer_t* url = buffer_new_with_copy("https://raw.githubusercontent.com/");
+    buffer_append(url, user);
+    buffer_append(url, "/");
+    buffer_append(url, repo);
+    buffer_append(url, "/refs/");
+    buffer_t* alternate_url = buffer_new_with_copy(url->data);
+    if(strncmp(version, "*", 1) == 0)
+    {
+        buffer_append(url, "heads/main/");
+        buffer_append(alternate_url, "heads/master/");
+    }
+    else {
+        buffer_append(url, "tags/");
+        buffer_append(alternate_url, "tags/");
+        buffer_append(url, version);
+        buffer_append(alternate_url, version);
+        buffer_append(url, "/");
+        buffer_append(alternate_url, "/");
+    }
+    buffer_append(url, file);
+    buffer_append(alternate_url, file);
+    //printf("URL: %s\n", url->data);
+    //printf("Alternate URL: %s\n", alternate_url->data);
+    char* resString = FIDO_FETCH("GET", url->data, NULL, NULL);
+    FIDO_HTTP_RESPONSE* res = FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(resString);
+    if (res->response_code == 200)
+    {
+       //fLOGF_INFO(fhl, "Fetched with code %d", res->response_code);
+       return res->body;
+    }
+    else
+    {
+        char* resString = FIDO_FETCH("GET", alternate_url->data, NULL, NULL);
+        FIDO_HTTP_RESPONSE* res = FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(resString);
+        if (res->response_code == 200)
+        {
+            //fLOGF_INFO(fhl, "Fetched with code %d", res->response_code);
+            return res->body;
+        }
+        else
+        {
+            //fLOGF_WARN(fhl, "Failed to fetch with code %d", res->response_code);
+            return NULL;
+        }
+
+    }
+}
+
+survey_file_t* srvyr_get_dependency_survey(survey_file_t* survey, dependency_t* dependency)
+{
+    if(strncmp(dependency->type->data, "clib", 4) == 0)
+    {
+        //Split the User/Repo String
+        buffer_t* userRepo = buffer_new_with_copy(dependency->name->data);
+        size_t slashIndex = buffer_indexof(userRepo, "/");
+        buffer_t* user = buffer_slice(userRepo, 0, slashIndex);
+        buffer_t* repo = buffer_slice(userRepo, slashIndex+1, strlen(userRepo->data));
+        //printf("USER: %s\n", user->data);
+        //printf("REPO: %s\n", repo->data);
+        //Get the file from the github repo.
+        char* file = srvyr_get_github_file(user->data, repo->data, "clib.json", "*");
+        if (!file){
+            file = srvyr_get_github_file(user->data, repo->data, "package.json", "*");
+            if (!file){
+                fLOG_ERROR(fhl, "Failed to get file from github");
+                return NULL;
+            }
+            else{
+                survey = srvyr_load_survey(survey, file);
+                return survey;
+            }
+        }
+        else{
+            survey = srvyr_load_survey(survey, file);
+            return survey;
+        }
+    }
+    else if (strncmp(dependency->type->data, "survey", 6) == 0)
+    {
+        return NULL; // For now
+    }
+    else {
+        return NULL;
+    }
 }

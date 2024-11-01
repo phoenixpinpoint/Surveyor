@@ -23,4 +23,13 @@ vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
 //Returns 0 if completed successfully, -1 on error. 
 int parseClib(char* path);
 
+//Gets a given file from a github repo.
+char* srvyr_get_github_file(char* user, char* repo, char* file, char* version);
+
+//Get Dependency Clib or Survey
+survey_file_t* srvyr_get_dependency_survey(survey_file_t* survey, dependency_t* dependency);
+
+//Install a given dependency
+//int srvyr_install_dependency(char* dependency);
+
 #endif

@@ -259,15 +259,21 @@ survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content)
 		}
 	}
 	//Dpendencies is not an array but a JSON_Object
+	//Add Special Handling for Survey Dependencies vs Clib Dependencies
 	JSON_Object* dependencies = json_object_get_object(file, "dependencies");
 	if (dependencies != NULL)
 	{		
 		for (int i = 0; i < json_object_get_count(dependencies); i++)
 		{
-			dependency_t* dependency = (dependency_t*)malloc(1*sizeof(dependency_t));
-			dependency->name = buffer_new_with_copy(json_object_get_name(dependencies, i));
-			dependency->version = buffer_new_with_copy(json_object_get_string(dependencies, dependency->name->data));
-			vec_push(&survey->dependencies, dependency);
+			char* name = json_object_get_name(dependencies, i);
+			char* version = json_object_get_string(dependencies, name);
+			char* type = "clib\0";
+			dependency_t* dep = srvyr_dependency_init(
+				name, 
+				version, 
+				type
+			);
+			vec_push(&survey->dependencies, dep);
 		}
 	} 
 	else {
@@ -349,4 +355,13 @@ void srvyr_generate_survey()
 
     //Clean-up
     vec_deinit(&srcPaths);
+}
+
+dependency_t* srvyr_dependency_init(char* name, char* version, char* type)
+{
+	dependency_t* dependency = (dependency_t*)malloc(1*sizeof(dependency_t));
+	dependency->name = buffer_new_with_copy(name);
+	dependency->version = buffer_new_with_copy(version);
+	dependency->type = buffer_new_with_copy(type);
+	return dependency;
 }
