@@ -18,7 +18,7 @@ leak:
 	
 test:
 	make clean;
-	cd ./tests; gcc -D USE_LIBCURL-I../deps -I../deps/cwalk -I../modules tests.c -o all_tests.o -pthread -lcheck -lcurl -lsubunit -lrt -lm; ./all_tests.o
+	cd ./tests; gcc -D USE_LIBCURL -I../deps -I../deps/cwalk -I../modules tests.c -o all_tests.o -pthread -lcheck -lcurl -lsubunit -lrt -lm; ./all_tests.o
 	rm -rf ./tests/getfilestest
 
 clean:

@@ -16,7 +16,8 @@
     "rxi/vec": "*",
     "jwerle/fs.c": "*",
     "phoenixpinpoint/ulog": "*",
-    "phoenixpinpoint/fido": "*"
+    "phoenixpinpoint/fido": "*",
+    "kokke/tiny-regex-c": "0.1.0"
   },
   "src": [
     "surveyor.c"

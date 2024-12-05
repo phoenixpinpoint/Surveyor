@@ -6,13 +6,20 @@
 #include <cwalk/cwalk.c>
 #include <parson/parson.c>
 #include <vec/vec.c>
+#include <fido/response.c>
+#include <fido/fido.c>
+#include <fido/headers.h>
+#include <fido/headers.c>
+#include <fido/request.c>
 
-#include "../modules/file.c"
-#include "../modules/survey.c"
+#include "../src/file.c"
+#include "../src/survey.c"
 
 #include "file.c"
 #include "survey.c"
-#include "../surveyor.c"
+#include "../src/surveyor.c"
+
+file_logger *fhl;
 
 int main(void)
 {

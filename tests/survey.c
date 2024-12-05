@@ -1,5 +1,5 @@
 #include <check.h>
-#include "../modules/survey.h"
+#include "../src/survey.h"
 
 #include <buffer/buffer.h>
 

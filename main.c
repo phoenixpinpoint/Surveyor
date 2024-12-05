@@ -1,8 +1,8 @@
-#include "modules/surveyor.h"
+#include "src/surveyor.h"
 
-#include "modules/file.c"
-#include "modules/survey.c"
-#include "modules/surveyor.c"
+#include "src/file.c"
+#include "src/survey.c"
+#include "src/surveyor.c"
 
 #include "survey.c"
 

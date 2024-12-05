@@ -12,6 +12,8 @@
 #include <ulog/logger.h>
 #include <cwalk/cwalk.h>
 
+#include <fido/fido.h>
+
 #include "file.h"
 #include "survey.h"
 

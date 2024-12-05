@@ -1,7 +1,5 @@
 #include "surveyor.h"
 
-#include <fido/fido.h>
-
 extern file_logger *fhl;
 
 //Parses a JSON_Object(clib dependencies object)

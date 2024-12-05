@@ -1,5 +1,5 @@
 #include <check.h>
-#include "../modules/file.h"
+#include "../src/file.h"
 
 #include <fs/fs.h>
 #include <buffer/buffer.h>
