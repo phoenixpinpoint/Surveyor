@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
                 fs_close(clib_fd);
                 survey_struct = srvyr_load_survey(survey_struct, fileContents);
                 survey_struct->clibFlag = 1;
-				srvyr_dump_survey(survey_struct);
             }
             else
             {
@@ -78,6 +77,7 @@ int main(int argc, char *argv[])
                     if (dep_file)
                     {
                         dependency_files[i] = dep_file;
+						srvyr_dump_survey(dep_file);
                     }
                     else
                     {
@@ -85,9 +85,6 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-
-            
-
 
             char* res = srvyr_get_github_file("phoenixpinpoint", "fido", "clib.json", "*");
             printf("%s\n", res);

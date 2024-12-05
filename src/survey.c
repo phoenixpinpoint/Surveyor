@@ -454,7 +454,12 @@ void srvyr_dump_survey(survey_file_t* survey)
 		for (int i = 0; i < survey->dependencies.length; i++)
 		{
 			dependency_t* dep = survey->dependencies.data[i];
-			json_object_set_string(dependencies, dep->name->data, dep->version->data);
+			JSON_Value* dep_value = json_value_init_object();
+			JSON_Object* dep_object = json_value_get_object(dep_value);
+			json_object_set_string(dep_object, "name", dep->name->data);
+			json_object_set_string(dep_object, "version", dep->version->data);
+			json_object_set_string(dep_object, "type", dep->type->data);
+			json_object_set_value(dependencies, dep->name->data, dep_value);
 		}
 		json_object_set_value(root_object, "dependencies", dependencies_value);
 	}
