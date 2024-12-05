@@ -15,7 +15,7 @@
     "likle/cwalk": "*",
     "rxi/vec": "*",
     "jwerle/fs.c": "*",
-    "phoenixpinpoint/ulog": "*",
+    "bonedaddy/ulog": "*",
     "phoenixpinpoint/fido": "*",
     "kokke/tiny-regex-c": "0.1.0"
   },

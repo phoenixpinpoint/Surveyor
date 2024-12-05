@@ -2,6 +2,7 @@
 
 deps
 tests/unit
+tests/all_tests.o
 surveyor
 
 # Swap
