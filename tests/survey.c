@@ -203,7 +203,6 @@ START_TEST(set_license)
 }
 END_TEST
 
-
 Suite* survey_suite(void)
 {
 	Suite *s;

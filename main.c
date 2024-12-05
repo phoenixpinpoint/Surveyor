@@ -126,20 +126,19 @@ int main(int argc, char *argv[])
     if(surveyExists != -1)
     {
         fLOG_INFO(fhl, "survey.json exists using Surveyor format");
-        FILE* survey_fd = fs_open("./survey.json", "r");
-        fileContents = fs_fread(survey_fd);
-        fs_close(survey_fd);
+		fileContents = fs_read("./survey.json");
         survey_struct = srvyr_load_survey(survey_struct, fileContents);
         survey_struct->clibFlag = 0;
+		fLOG_INFO(fhl, "Surveyor Survey Loaded");
     }
     else if (clibExists != -1 && surveyExists == -1)
     {
         fLOG_INFO(fhl, "clib.json exists using legacy Clib format");
         FILE* clib_fd = fs_open("./clib.json", "r");
-        fileContents = fs_fread(clib_fd);
-        fs_close(clib_fd);
+        fileContents = fs_read("clib.json");
         survey_struct = srvyr_load_survey(survey_struct, fileContents);
         survey_struct->clibFlag = 1;
+		fLOG_INFO(fhl, "Surveyor Survey Loaded");
     }
     else
     {
