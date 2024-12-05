@@ -38,34 +38,13 @@ vec_str_t getDependencies(vec_str_t dependencies, JSON_Object *dependencyObject)
 //Returns 0 if completed successfully, -1 on error. 
 int parseClib(char* path)
 {
-    //Open clibs.json
-    //printf("Opening %s", path);
-    FILE *clib = fs_open(path, "r");
-    if(clib != NULL)//File is open.
-    {
-        //printf("....success\n");
-    }
-    else {//File is not open.
-        //printf("....failed\n");
-        fLOGF_ERROR(fhl, "File %s failed to open", path);
-        return -1;
-    }
-
-    //Read file into buffer
-    //printf("Reading %s", path);
-    buffer_t* clibContents = buffer_new_with_copy(fs_fread(clib));
-
-    //Check the length of contents
-    if (strlen(clibContents->data) > 0)
-    {
-        //printf("....success\n");
-    }
-    else
-    {
-        //printf("....failed\n");
-        fLOGF_ERROR(fhl, "Contents of %s are empty", path);
-        return -1;
-    }
+    //Using fs.c read the file. 
+    buffer_t* clibContents = buffer_new_with_copy(fs_read(path));
+	if (clibContents->len == 0)
+	{
+		fLOGF_ERROR(fhl, "Failed to read %s", path);
+		return -1;	
+	}
 
     //Parse the JSON.
     //printf("Parsing %s", path);
@@ -194,7 +173,6 @@ int parseClib(char* path)
 
     //Clean-up
     vec_deinit(&moduleDeps);
-    fs_close(clib);
     buffer_free(clibContents);
     json_value_free(root);
 
