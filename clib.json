@@ -20,7 +20,12 @@
     "kokke/tiny-regex-c": "0.1.0"
   },
   "src": [
-    "surveyor.c"
+    "src/surveyor.c",
+	"src/surveyor.h",
+	"src/survey.c",
+	"src/survey.h",
+	"src/file.c",
+	"src/file.h"
   ],
   "install": "make local"
 }

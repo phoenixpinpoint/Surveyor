@@ -10,8 +10,6 @@
 #include <stdio.h>
 
 #include "survey.h"
-#include "file.h"
-
 
 extern file_logger *fhl;
 
@@ -24,8 +22,10 @@ survey_file_t* srvyr_survey_init(char* version, char* name)
 	survey->name = NULL;
 	survey->repo = NULL;
 	survey->install = NULL;
+	survey->uninstall = NULL;
 	survey->makefile = NULL;
 	survey->license = NULL;
+	survey->type = NULL;
 	vec_void_t src;
 	vec_init(&src);
 	survey->src = src;
@@ -209,6 +209,8 @@ survey_file_t* srvyr_load_survey(survey_file_t* survey, char* content)
 	if (type != NULL)
 	{
 		survey->type = buffer_new_with_copy(type);
+	} else {
+		survey->type = buffer_new_with_copy("clib\0");
 	}
 	char* surveyVersion = json_object_get_string(file, "surveyVersion");
 	fLOGF_DEBUG(fhl, "Survey Version: %s", surveyVersion);
@@ -315,7 +317,7 @@ void srvyr_generate_survey()
     if (parseStatus < 0)
     {
         fLOG_ERROR(fhl, "Failed to parse clib.json");
-        return -1;
+        return;
     }
     else
     {
@@ -352,7 +354,7 @@ void srvyr_generate_survey()
         {
             fLOG_ERROR(fhl, "Failed to write to survey.c");
             vec_deinit(&srcPaths);
-            return -1;
+            return;
         }
         else
         {
@@ -363,7 +365,7 @@ void srvyr_generate_survey()
     else {//write failure.
         fLOG_ERROR(fhl, "Failed to open survey.c");
         vec_deinit(&srcPaths);
-        return -1;
+        return;
     }
 
     //Clean-up
@@ -377,4 +379,104 @@ dependency_t* srvyr_dependency_init(char* name, char* version, char* type)
 	dependency->version = buffer_new_with_copy(version);
 	dependency->type = buffer_new_with_copy(type);
 	return dependency;
+}
+
+void srvyr_dump_survey(survey_file_t* survey)
+{
+	json_set_escape_slashes(0);	
+	JSON_Value* root_value = json_value_init_object();
+	JSON_Object* root_object = json_value_get_object(root_value);
+	if (survey->name != NULL)
+	{
+		json_object_set_string(root_object, "name", survey->name->data);
+	}
+	if (survey->version != NULL)
+	{
+		json_object_set_string(root_object, "version", survey->version->data);
+	}
+	if (survey->repo != NULL)
+	{
+		json_object_set_string(root_object, "repo", survey->repo->data);
+	}
+	if (survey->type != NULL)
+	{
+		json_object_set_string(root_object, "type", survey->type->data);
+	}
+	if (survey->surveyVersion != NULL)
+	{
+		json_object_set_string(root_object, "surveyVersion", survey->surveyVersion->data);
+	}
+	if (survey->install != NULL)
+	{
+		json_object_set_string(root_object, "install", survey->install->data);
+	}
+	if (survey->uninstall != NULL)
+	{
+		json_object_set_string(root_object, "uninstall", survey->uninstall->data);
+	}
+	if (survey->makefile != NULL)
+	{
+		json_object_set_string(root_object, "makefile", survey->makefile->data);
+	}
+	if (survey->license != NULL)
+	{
+		json_object_set_string(root_object, "license", survey->license->data);
+	}
+
+	JSON_Value* src_value = json_value_init_array();
+	if (survey->src.length > 0)
+	{
+		JSON_Array* src = json_value_get_array(src_value);
+		for (int i = 0; i < survey->src.length; i++)
+		{
+			buffer_t* srcPath = survey->src.data[i];
+			json_array_append_string(src, srcPath->data);
+		}
+		json_object_set_value(root_object, "src", src_value);
+	}
+	
+	JSON_Value* keywords_value = json_value_init_array();
+	if (survey->keywords.length > 0)
+	{
+		JSON_Array* keywords = json_value_get_array(keywords_value);
+		for (int i = 0; i < survey->keywords.length; i++)
+		{
+			buffer_t* keyword = survey->keywords.data[i];
+			json_array_append_string(keywords, keyword->data);
+		}
+		json_object_set_value(root_object, "keywords", keywords_value);
+	}
+	
+	JSON_Value* dependencies_value = json_value_init_object();
+	if (survey->dependencies.length > 0)
+	{
+		JSON_Object* dependencies = json_value_get_object(dependencies_value);
+		for (int i = 0; i < survey->dependencies.length; i++)
+		{
+			dependency_t* dep = survey->dependencies.data[i];
+			json_object_set_string(dependencies, dep->name->data, dep->version->data);
+		}
+		json_object_set_value(root_object, "dependencies", dependencies_value);
+	}
+
+	JSON_Value* development_value = json_value_init_array();
+	if (survey->development.length > 0)
+	{
+		JSON_Array* development = json_value_get_array(development_value);
+		for (int i = 0; i < survey->development.length; i++)
+		{
+			buffer_t* dev = survey->development.data[i];
+			json_array_append_string(development, dev->data);
+		}
+		json_object_set_value(root_object, "development", development_value);
+	}
+	char* content = json_serialize_to_string_pretty(root_value);
+	
+	printf("===Survey Dump===\n%s\n======\n",content);
+	json_value_free(root_value);
+	//json_value_free(src_value);
+	//json_value_free(keywords_value);
+	//json_value_free(dependencies_value);
+	free(content);
+	json_set_escape_slashes(1);
 }
