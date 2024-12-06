@@ -31,7 +31,7 @@ char* srvyr_get_github_file(char* user, char* repo, char* file, char* version);
 //Get Dependency Clib or Survey
 survey_file_t* srvyr_get_dependency_survey(survey_file_t* survey, dependency_t* dependency);
 
-//Install a given dependency
-//int srvyr_install_dependency(char* dependency);
+//Install a given clib dependency
+int srvyr_install_clib_dependency(survey_file_t* survey);
 
 #endif

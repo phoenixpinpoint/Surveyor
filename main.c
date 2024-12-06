@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
             //If Deps Folder doesn't exist create it.
             if (fs_exists("./deps") == -1)
             {
-                fs_mkdir("./deps", 0777);
+                fs_mkdir("./deps", 0755);
             }
 
             //Get a list of all the dependencies
@@ -68,7 +68,6 @@ int main(int argc, char *argv[])
             if(survey_struct->clibFlag == 1)
             {
                 fLOG_INFO(fhl, "Getting Dependencies");
-                //printf("Size of dependencies %d\n", survey_struct->dependencies.length);
                 int dependency_count = survey_struct->dependencies.length;
                 survey_file_t** dependency_files = (survey_file_t**)malloc(survey_struct->dependencies.length*sizeof(survey_file_t*));
                 for (int i = 0; i < survey_struct->dependencies.length; i++)
@@ -77,17 +76,16 @@ int main(int argc, char *argv[])
                     if (dep_file)
                     {
                         dependency_files[i] = dep_file;
-						srvyr_dump_survey(dep_file);
+						printf("\n");
+						fLOGF_INFO(fhl, "Installing Dependency %s", dep_file->name->data);
+						srvyr_install_clib_dependency(dep_file);
                     }
                     else
                     {
-                        fLOG_ERROR(fhl, "Failed to get dependency");
+						fLOGF_ERROR(fhl, "Failed to get dependency: %s\n", ((dependency_t*)survey_struct->dependencies.data[i])->name->data);
                     }
                 }
             }
-
-            char* res = srvyr_get_github_file("phoenixpinpoint", "fido", "clib.json", "*");
-            printf("%s\n", res);
         }
         else if (strncmp(argv[1], "uninstall", 9) == 0)
         {

@@ -214,7 +214,8 @@ char* srvyr_get_github_file(char* user, char* repo, char* file, char* version)
     }
     else
     {
-        char* resString = FIDO_FETCH("GET", alternate_url->data, NULL, NULL);
+        //fLOGF_WARN(fhl, "Failed to fetch first url with code %d, trying alternate.", res->response_code);
+		char* resString = FIDO_FETCH("GET", alternate_url->data, NULL, NULL);
         FIDO_HTTP_RESPONSE* res = FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(resString);
         if (res->response_code == 200)
         {
@@ -223,7 +224,7 @@ char* srvyr_get_github_file(char* user, char* repo, char* file, char* version)
         }
         else
         {
-            //fLOGF_WARN(fhl, "Failed to fetch with code %d", res->response_code);
+            //fLOGF_ERROR(fhl, "Failed to fetch with code %d", res->response_code);
             return NULL;
         }
 
@@ -239,25 +240,38 @@ survey_file_t* srvyr_get_dependency_survey(survey_file_t* survey, dependency_t* 
         size_t slashIndex = buffer_indexof(userRepo, "/");
         buffer_t* user = buffer_slice(userRepo, 0, slashIndex);
         buffer_t* repo = buffer_slice(userRepo, slashIndex+1, strlen(userRepo->data));
-        //printf("USER: %s\n", user->data);
-        //printf("REPO: %s\n", repo->data);
-        //Get the file from the github repo.
-        char* file = srvyr_get_github_file(user->data, repo->data, "clib.json", "*");
-        if (!file){
-            file = srvyr_get_github_file(user->data, repo->data, "package.json", "*");
-            if (!file){
-                fLOG_ERROR(fhl, "Failed to get file from github");
-                return NULL;
-            }
-            else{
-                survey = srvyr_load_survey(survey, file);
-                return survey;
-            }
-        }
-        else{
-            survey = srvyr_load_survey(survey, file);
-            return survey;
-        }
+	
+        //Get the file from the github repo with the given version
+        char* file = srvyr_get_github_file(user->data, repo->data, "clib.json", dependency->version->data);
+		if (file)//Found clib with given version
+		{
+			survey = srvyr_load_survey(survey, file);
+			return survey;
+		}
+
+		file = srvyr_get_github_file(user->data, repo->data, "package.json", dependency->version->data);
+		if(file)//Found package.json with given version
+		{
+			survey = srvyr_load_survey(survey, file);
+			return survey;
+		}
+
+		file = srvyr_get_github_file(user->data, repo->data, "clib.json", "*");
+		if(file)//Found clib with latest version
+		{
+			survey = srvyr_load_survey(survey, file);
+			return survey;
+		}
+		
+		file = srvyr_get_github_file(user->data, repo->data, "package.json", "*");
+		if(file)//Found package.json with latest version
+		{
+			survey = srvyr_load_survey(survey, file);
+			return survey;
+		}
+		
+		//If we reache here we cannot find the clib.json or package.json
+		return NULL;
     }
     else if (strncmp(dependency->type->data, "survey", 6) == 0)
     {
@@ -266,4 +280,72 @@ survey_file_t* srvyr_get_dependency_survey(survey_file_t* survey, dependency_t* 
     else {
         return NULL;
     }
+}
+
+//Install a given clib dependency
+int srvyr_install_clib_dependency(survey_file_t* survey)
+{
+	//Create the deps folder if it doesn't exist
+	buffer_t* depPath = buffer_new();
+	buffer_append(depPath, "./deps/");
+	buffer_append(depPath, survey->name->data);
+
+	//Get the user and repo from the repo string
+	//Ex: phoenixpinpoint/fido
+	buffer_t* userRepo = buffer_new_with_copy(survey->repo->data);
+	size_t slashIndex = buffer_indexof(userRepo, "/");
+	buffer_t* user = buffer_slice(userRepo, 0, slashIndex);
+	buffer_t* repo = buffer_slice(userRepo, slashIndex+1, strlen(userRepo->data));
+	//printf("USER: %s\n", user->data);
+	//printf("REPO: %s\n", repo->data);
+
+	if (fs_exists(depPath->data) == -1)
+	{
+		fs_mkdir(depPath->data, 0755);
+	}
+	else
+	{
+		fLOGF_ERROR(fhl, "Dependency %s already exists", survey->name->data);
+		return -1;
+	}
+
+	//Get the source files	
+	for (int i = 0; i < survey->src.length; i++)
+	{
+		buffer_t* srcPath = survey->src.data[i];
+		fLOGF_INFO(fhl, "Getting %s", srcPath->data);
+		char* srcFileContents = srvyr_get_github_file(user->data, repo->data, srcPath->data, survey->version->data);
+		if (!srcFileContents)//If the file version doesn't exist in the repo, get the latest version
+		{
+			fLOG_DEBUG(fhl, "Failed to get tagged version, getting latest");
+			srcFileContents = srvyr_get_github_file(user->data, repo->data, srcPath->data, "*");
+		}
+
+		if(srcFileContents)
+		{
+			buffer_t* srcFilePath = buffer_new();
+			buffer_append(srcFilePath, depPath->data);
+			buffer_append(srcFilePath, "/");
+			size_t slashIndex = buffer_indexof(srcPath, "/");
+			if(slashIndex != -1)
+			{
+				buffer_t* fileName = buffer_slice(srcPath, slashIndex+1, strlen(srcPath->data));
+				buffer_append(srcFilePath, fileName->data);
+			} else {
+				buffer_append(srcFilePath, srcPath->data);
+			}
+			int writeResult = fs_write(srcFilePath->data, srcFileContents);
+			if (writeResult == -1)
+			{
+				fLOGF_ERROR(fhl, "Failed to write %s", srcFilePath->data);
+			} else {
+				fLOGF_INFO(fhl, "Wrote %s", srcFilePath->data);
+			}
+			buffer_free(srcFilePath);
+		}
+		else
+		{
+			fLOGF_ERROR(fhl, "Failed to get %s", srcPath->data);
+		}
+	}
 }
