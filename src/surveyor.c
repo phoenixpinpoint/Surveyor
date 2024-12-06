@@ -348,4 +348,18 @@ int srvyr_install_clib_dependency(survey_file_t* survey)
 			fLOGF_ERROR(fhl, "Failed to get %s", srcPath->data);
 		}
 	}
+
+	//Create the survey file
+	buffer_t* surveyPath = buffer_new();
+	buffer_append(surveyPath, depPath->data);
+	buffer_append(surveyPath, "/");
+	buffer_append(surveyPath, "survey.json");
+	char* surveyString = srvyr_json_serialize_survey(survey);
+	int writeResult = fs_write(surveyPath->data, surveyString);
+	if (writeResult == -1)
+	{
+		fLOGF_ERROR(fhl, "Failed to write %s", surveyPath->data);
+	} else {
+		fLOGF_INFO(fhl, "Wrote %s", surveyPath->data);
+	}
 }

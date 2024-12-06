@@ -89,7 +89,10 @@ void srvyr_generate_survey();
 // Initialize a Dependency Data Structure
 dependency_t* srvyr_dependency_init(char* name, char* version, char* type);
 
+// Serialize the survey file to a JSON string.
+char* srvyr_json_serialize_survey(survey_file_t* survey);
+
 // Dump the survey file to a JSON string.
-void srvyr_dump_survey(survey_file_t* survey);
+void srvyr_dump_survey(char* content);
 
 #endif

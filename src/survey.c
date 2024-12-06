@@ -381,7 +381,7 @@ dependency_t* srvyr_dependency_init(char* name, char* version, char* type)
 	return dependency;
 }
 
-void srvyr_dump_survey(survey_file_t* survey)
+char* srvyr_json_serialize_survey(survey_file_t* survey)
 {
 	json_set_escape_slashes(0);	
 	JSON_Value* root_value = json_value_init_object();
@@ -476,12 +476,14 @@ void srvyr_dump_survey(survey_file_t* survey)
 		json_object_set_value(root_object, "development", development_value);
 	}
 	char* content = json_serialize_to_string_pretty(root_value);
-	
-	printf("===Survey Dump===\n%s\n======\n",content);
 	json_value_free(root_value);
-	//json_value_free(src_value);
-	//json_value_free(keywords_value);
-	//json_value_free(dependencies_value);
-	free(content);
 	json_set_escape_slashes(1);
+	return content;
+}
+
+void srvyr_dump_survey(char* content)
+{
+		
+	printf("===Survey Dump===\n%s\n======\n",content);
+	free(content);
 }
