@@ -12,12 +12,36 @@
     ],
     "license": "MIT",
     "dependencies": {
-      "clibs/buffer": "*",
-      "kgabis/parson": "*",
-      "likle/cwalk": "*",
-      "rxi/vec": "*",
-      "jwerle/fs.c": "*",
-      "phoenixpinpoint/ulog": "0.0.3"
+    	"clibs/buffer": {
+			"name":"clibs/buffer",
+			"version":"*",
+			"type":"clib"
+		},
+		"kgabis/parson": {
+			"name":"kgabis/parson",
+			"version":"*",
+			"type":"clib"
+		},
+		"likle/cwalk": {
+			"name":"likle/cwalk",
+			"version":"*",
+			"type":"clib"
+		},
+		"rxi/vec": {
+			"name":"rxi/vec",
+			"version":"*",
+			"type":"clib"
+		},
+		"jwerle/fs.c": {
+			"name":"jwerle/fs.c",
+			"version":"*",
+			"type":"clib"
+		},
+		"bonedaddy/ulog": {
+			"name":"bonedaddy/ulog",
+			"version":"*",
+			"type":"clib"
+		}
     },
     "src": [
       "surveyor.c"
