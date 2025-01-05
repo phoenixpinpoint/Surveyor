@@ -1,16 +1,31 @@
+#include <stdio.h>
+
 #include "src/surveyor.h"
+
+//Ironically, surveyor doesn't include survey.c for dependencies
+//This is because surveyors build process may break survey.c
+#include <buffer/buffer.c>
+#include <cwalk/cwalk.c>
+#include <fs/fs.c>
+#include <fido/fido.c>
+#include <fido/headers.c>
+#include <fido/request.c>
+#include <fido/response.c>
+#include <parson/parson.c>
+#include <vec/vec.c>
+#include <ulog/logger.c>
+#include <ulog/colors.c>
+#include <tiny-regex-c/re.c>
 
 #include "src/file.c"
 #include "src/survey.c"
 #include "src/surveyor.c"
 
-#include "survey.c"
-
 file_logger *fhl;
 
 int main(int argc, char *argv[]) 
 {
-    fhl = new_file_logger("surveyor.log", false);
+    fhl = new_file_logger("surveyor.log", true);
     fLOG_INFO(fhl, "Surveyor v0.3.0");
 
     if (argc == 1)
@@ -96,6 +111,11 @@ int main(int argc, char *argv[])
                 fs_rmdir("./deps");
             }
         }
+		else if(strncmp(argv[1], "generate", 8) == 0)
+		{
+			fLOG_INFO(fhl, "Running	Survey Generation");
+			srvyr_generate_survey();
+		}
         else
         {
             fLOGF_ERROR(fhl, "%s is not a valid command", argv[1]);
@@ -106,39 +126,9 @@ int main(int argc, char *argv[])
     {
         //fLOGF_INFO(fhl, "Running Survey Generation for %s", argv[1]);
     }
-    else
+    else // We should never get here as just running surveyor will run generate.
     {
         fLOG_ERROR(fhl, "Invalid number of arguments");
-        return -1;
-    }
-
-    //Load the Root Survey/Clib File into the surveyor.
-    //Look in the current directory for clib.json or survey.json
-    int clibExists = fs_exists("./clib.json");
-    int surveyExists = fs_exists("./survey.json");
-    char* fileContents = 0;
-    survey_file_t* survey_struct = 0;
-    //If survey.json exists
-    if(surveyExists != -1)
-    {
-        fLOG_INFO(fhl, "survey.json exists using Surveyor format");
-		fileContents = fs_read("./survey.json");
-        survey_struct = srvyr_load_survey(survey_struct, fileContents);
-        survey_struct->clibFlag = 0;
-		fLOG_INFO(fhl, "Surveyor Survey Loaded");
-    }
-    else if (clibExists != -1 && surveyExists == -1)
-    {
-        fLOG_INFO(fhl, "clib.json exists using legacy Clib format");
-        FILE* clib_fd = fs_open("./clib.json", "r");
-        fileContents = fs_read("clib.json");
-        survey_struct = srvyr_load_survey(survey_struct, fileContents);
-        survey_struct->clibFlag = 1;
-		fLOG_INFO(fhl, "Surveyor Survey Loaded");
-    }
-    else
-    {
-        fLOG_ERROR(fhl, "No survey.json or clib.json found");
         return -1;
     }
 
