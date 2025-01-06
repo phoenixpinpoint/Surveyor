@@ -14,6 +14,7 @@
 //ie #include <stdlib.h>
 #include <vec/vec.h>
 #include <cwalk/cwalk.h>
+#include <buffer/buffer.h>
 
 //Local Headers
 //ie #include "somefile.h"
@@ -31,6 +32,7 @@ vec_void_t srvyr_get_files_in_directory(char* dirPath);
 //Returns a vector of buffer_t's
 vec_void_t srvyr_get_source_files(vec_void_t files);
 
-
+//Return a vector of all statically included source files
+vec_void_t srvyr_get_included_source_files(buffer_t* contents);
 
 #endif

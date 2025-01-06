@@ -21,11 +21,17 @@ test:
 	cd ./tests; gcc -D USE_LIBCURL -I../deps -I../deps/cwalk -I../modules tests.c -o all_tests.o -pthread -lcheck -lcurl -lsubunit -lrt -lm; ./all_tests.o
 	rm -rf ./tests/getfilestest
 
+filetest:
+	make clean;
+	cd ./tests; gcc -D STANDALONE -I../deps -I../deps/cwalk file.c -o filetest -pthread -lcheck -lcurl -lsubunit -lrt -lm; ./filetest
+	rm -rf ./tests/filestest
+
 clean:
 	rm -rf ./surveyor
-	rm -rf ./getfilestest
+	rm -rf ./filestest
 	rm -rf ./tests/*.o
 	rm -rf ./tests/getfilestest
+	rm -rf ./tests/filetest
 	rm -rf ./tests/*.gcov
 	rm -rf ./tests/*.gcda
 	rm -rf ./tests/*.gcno

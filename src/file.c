@@ -87,4 +87,75 @@ vec_void_t srvyr_get_source_files(vec_void_t files)
 	return sourceFiles;
 }
 
+vec_void_t srvyr_get_included_source_files(buffer_t* contents)
+{
+	vec_void_t sourceFiles;
+	vec_init(&sourceFiles);
 
+    char* line = strtok(contents->data, "\n");
+	while (line != NULL)
+    {
+        // Check if the line contains an include statement
+        if (strstr(line, "#include") != NULL)
+        {
+            //Check " 
+			
+			// Extract the filename from the include statement
+            char* start = strchr(line, '"');
+            if (start != NULL)
+            {
+                char* end = strchr(start + 1, '"');
+                if (end != NULL)
+                {
+                    // Null-terminate the filename
+                    *end = '\0';
+                    char* filename = start + 1;
+
+					buffer_t* file = buffer_new_with_copy(filename);
+
+                    // Check if the filename ends with .c
+                    if (strstr(filename, ".c") != NULL)
+                    {
+                        // Add the filename to the vector
+                        vec_push(&sourceFiles, (void*)file);
+                    } else if (strstr(filename, ".cpp") != NULL)
+					{
+						vec_push(&sourceFiles, (void*)file);
+					} else if (strstr(filename, ".cxx") != NULL)
+					{
+						vec_push(&sourceFiles, (void*)file);
+					}
+                }
+            }
+
+			// Check <
+			start = strchr(line, '<');
+			if (start != NULL)
+			{
+				char* end = strchr(start + 1, '>');
+				if (end != NULL)
+				{
+					// Null-terminate the filename
+					*end = '\0';
+					char* filename = start + 1;
+					buffer_t* file = buffer_new_with_copy(filename);
+
+					// Check if the filename ends with .c
+					if (strstr(filename, ".c") != NULL)
+					{
+						// Add the filename to the vector
+						vec_push(&sourceFiles, (void*)file);
+					} else if (strstr(filename, ".cpp") != NULL)
+					{
+						vec_push(&sourceFiles, (void*)file);
+					} else if (strstr(filename, ".cxx") != NULL)
+					{
+						vec_push(&sourceFiles, (void*)file);
+					}
+				}
+			}
+        }
+        line = strtok(NULL, "\n");
+    }
+    return sourceFiles;
+}

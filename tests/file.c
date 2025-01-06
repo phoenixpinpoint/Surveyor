@@ -3,6 +3,16 @@
 
 #include <fs/fs.h>
 #include <buffer/buffer.h>
+#include <vec/vec.h>
+
+#ifdef STANDALONE
+#include <fs/fs.c>
+#include <buffer/buffer.c>
+#include <vec/vec.c>
+#include <cwalk/cwalk.c>
+
+#include "../src/file.c"
+#endif
 
 START_TEST(get_files)
 {	
@@ -68,6 +78,29 @@ START_TEST(issue_1_included_a_make_file)
 }
 END_TEST
 
+START_TEST(check_for_inline_includes)
+{
+	buffer_t* test = buffer_new_with_copy("#include <buffer/buffer.h>\n");
+	buffer_append(test, "#include <vec/vec.c>\n");
+	buffer_append(test, "#include <parson/parson.cpp>\n");
+	buffer_append(test, "#include <fs/fs.cxx>\n");
+	buffer_append(test, "#include <ulog/logger.h>\n");
+	buffer_append(test, "#include <cwalk/cwalk.h>\n");
+	buffer_append(test, "#include \"fido.c\"\n");
+
+	//printf("Example: %s\n", test->data);
+
+	vec_void_t sourceFiles = srvyr_get_included_source_files(test);
+
+	ck_assert_int_eq(sourceFiles.length, 4);
+	// printf("Source Files: %d\n", sourceFiles.length);
+	// printf("1: %s\n", ((buffer_t*)sourceFiles.data[0])->data);
+	// printf("2: %s\n", ((buffer_t*)sourceFiles.data[1])->data);
+	// printf("3: %s\n", ((buffer_t*)sourceFiles.data[2])->data);
+	// printf("4: %s\n", ((buffer_t*)sourceFiles.data[3])->data);
+}
+END_TEST
+
 Suite* file_suite(void)
 {
 	Suite *s;
@@ -79,7 +112,29 @@ Suite* file_suite(void)
 	tcase_add_test(tc_file, get_files);
 	tcase_add_test(tc_file, get_sources);
 	tcase_add_test(tc_file, issue_1_included_a_make_file);
+	tcase_add_test(tc_file, check_for_inline_includes);
 	suite_add_tcase(s, tc_file);
 	
 	return s;
 }
+
+#ifdef STANDALONE
+
+int main(void)
+{
+    int number_failed;
+    Suite *s;
+	SRunner *sr;
+
+    s = file_suite();
+    sr = srunner_create(s);
+
+	printf("%s\n", "RUNNING FILE TESTS\n========================\0");
+	srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
+#endif
